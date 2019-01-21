@@ -83,6 +83,7 @@ public final class WorkspaceRuleEvent implements ProgressLike {
       List<URL> urls,
       String output,
       String sha256,
+      List<String> integrity,
       Boolean executable,
       String ruleLabel,
       Location location) {
@@ -93,6 +94,9 @@ public final class WorkspaceRuleEvent implements ProgressLike {
             .setExecutable(executable);
     for (URL u : urls) {
       e.addUrl(u.toString());
+    }
+    for (String i : integrity) {
+      e.addIntegrity(i);
     }
 
     WorkspaceLogProtos.WorkspaceEvent.Builder result =
@@ -107,11 +111,39 @@ public final class WorkspaceRuleEvent implements ProgressLike {
     return new WorkspaceRuleEvent(result.build());
   }
 
-  /** Creates a new WorkspaceRuleEvent for a download and excract event. */
+  /** Creates a new WorkspaceRuleEvent for an extract event. */
+  public static WorkspaceRuleEvent newExtractEvent(
+      String archive,
+      String output,
+      String type,
+      String stripPrefix,
+      String ruleLabel,
+      Location location) {
+    WorkspaceLogProtos.ExtractEvent.Builder e =
+        WorkspaceLogProtos.ExtractEvent.newBuilder()
+            .setArchive(archive)
+            .setOutput(output)
+            .setType(type)
+            .setStripPrefix(stripPrefix);
+
+    WorkspaceLogProtos.WorkspaceEvent.Builder result =
+        WorkspaceLogProtos.WorkspaceEvent.newBuilder();
+    result = result.setExtractEvent(e.build());
+    if (location != null) {
+      result = result.setLocation(location.print());
+    }
+    if (ruleLabel != null) {
+      result = result.setRule(ruleLabel);
+    }
+    return new WorkspaceRuleEvent(result.build());
+  }
+
+  /** Creates a new WorkspaceRuleEvent for a download and extract event. */
   public static WorkspaceRuleEvent newDownloadAndExtractEvent(
       List<URL> urls,
       String output,
       String sha256,
+      List<String> integrity,
       String type,
       String stripPrefix,
       String ruleLabel,
@@ -124,6 +156,9 @@ public final class WorkspaceRuleEvent implements ProgressLike {
             .setStripPrefix(stripPrefix);
     for (URL u : urls) {
       e.addUrl(u.toString());
+    }
+    for (String i : integrity) {
+      e.addIntegrity(i);
     }
 
     WorkspaceLogProtos.WorkspaceEvent.Builder result =

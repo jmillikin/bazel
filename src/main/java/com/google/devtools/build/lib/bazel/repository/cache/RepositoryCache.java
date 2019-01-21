@@ -34,6 +34,8 @@ public class RepositoryCache {
   public enum KeyType {
     SHA1("SHA-1", "\\p{XDigit}{40}", "sha1", Hashing.sha1()),
     SHA256("SHA-256", "\\p{XDigit}{64}", "sha256", Hashing.sha256());
+    SHA384("SHA-384", "\\p{XDigit}{96}", "sha384", Hashing.sha384());
+    SHA512("SHA-512", "\\p{XDigit}{128}", "sha512", Hashing.sha512());
 
     private final String stringRepr;
     private final String regexp;

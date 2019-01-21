@@ -44,10 +44,23 @@ message DownloadEvent {
   repeated string url = 1;
   // Output file
   string output = 2;
-  // sha256, if speficied
+  // sha256, if specified
   string sha256 = 3;
   // whether to make the resulting file executable
   bool executable = 4;
+  // integrity, if specified
+  repeated string integrity = 5;
+}
+
+message ExtractEvent {
+  // Path to the archive file
+  string archive = 1;
+  // Path to the output directory
+  string output = 2;
+  // Archive type, if specified. Otherwise, inferred from archive path.
+  string type = 3;
+  // A directory prefix to strip from extracted files.
+  string strip_prefix = 4;
 }
 
 message DownloadAndExtractEvent {
@@ -61,6 +74,8 @@ message DownloadAndExtractEvent {
   string type = 4;
   // A directory prefix to strip from extracted files.
   string strip_prefix = 5;
+  // integrity, if specified
+  repeated string integrity = 6;
 }
 
 // Information on "file" event in repository_ctx.
@@ -120,5 +135,6 @@ message WorkspaceEvent {
     SymlinkEvent symlink_event = 8;
     TemplateEvent template_event = 9;
     WhichEvent which_event = 10;
+    ExtractEvent extract_event = 11;
   }
 }
